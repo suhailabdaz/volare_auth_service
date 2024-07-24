@@ -1,41 +1,40 @@
-import jwt, { Secret } from 'jsonwebtoken'
-import "dotenv/config"
+import jwt, { Secret } from 'jsonwebtoken';
+import "dotenv/config";
+
 export class Authcontroller {
-
-
-    isAuthenticated = async (call:any, callback:any) => {
-        try{
-            console.log("token validating  ");
-            const token = call.request.token || '';            
-            const decoded: any = jwt.verify(token, process.env.ACCESS_TOKEN || "Rashid" as Secret)
-            if(!decoded){
-                throw new Error('Invalid token')
-            }
-            callback(null,{userId : decoded.id, role: decoded.role})
-        }catch(e: any){
-            callback(e, {message:"something gone wrong in authentication"})
-          }
+  isAuthenticated = async (data: any) => {
+    try {
+      console.log("Token validating...",data);
+      const token = data.token || '';
+      const decoded: any = jwt.verify(token, process.env.ACCESS_TOKEN || "suhail" as Secret);
+      if (!decoded) {
+        throw new Error('Invalid token');
+      }
+      return { userId: decoded.id, role: decoded.role };
+    } catch (e: any) {
+      console.error(e);
+      throw new Error("Something went wrong in authentication");
     }
+  }
 
-    verifyToken = async(call:any, callback:any) => {
-        try{
-            const refreshtoken = call.request.token as string;
-            const decoded: any = jwt.verify(refreshtoken, process.env.REFRESH_TOKEN ||"Rashid" as Secret);
-            console.log("token refreshed ");
-            if(!decoded){
-                throw new Error("invalid token  ")
-            }
-            const refreshToken = jwt.sign({id: decoded.id, role: decoded.role}, process.env.REFRESH_TOKEN ||"Rashid" as Secret, {
-                expiresIn: "7d"
-            })
-            const accessToken = jwt.sign({id: decoded.id, role: decoded.role}, process.env.ACCESS_TOKEN ||"Rashid"as Secret, {
-                expiresIn: "15m"
-            })
-            const response = {accessToken, refreshToken}
-            callback(null, response)
-        }catch(e:any){
-            console.log(e);  
-            callback(e, {message:"something gone wrong in authentication "})
-        }
+  verifyToken = async (data: any) => {
+    try {
+      const refreshtoken = data.token as string;
+      const decoded: any = jwt.verify(refreshtoken, process.env.REFRESH_TOKEN || "suhail" as Secret);
+      console.log("Token refreshed");
+      if (!decoded) {
+        throw new Error("Invalid token");
+      }
+      const refreshToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.REFRESH_TOKEN || "suhail" as Secret, {
+        expiresIn: "7d"
+      });
+      const accessToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.ACCESS_TOKEN || "suhail" as Secret, {
+        expiresIn: "15m"
+      });
+      return { accessToken, refreshToken };
+    } catch (e: any) {
+      console.error(e);
+      throw new Error("Something went wrong in token verification");
     }
+  }
 }

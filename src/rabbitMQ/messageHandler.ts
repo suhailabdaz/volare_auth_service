@@ -13,13 +13,12 @@ export default class MessageHandler {
   ) {
     let response = data;
     console.log("The operation in user service is", operation, data);
-
     switch (operation) {
-      case "login":
-        response = await controller.isAuthenticated.bind(controller)(data,1);
+      case "isAuthenticated":
+        response = await controller.isAuthenticated.bind(controller)(data);
         break;
-      case "register":
-        response = await controller. verifyToken.bind(controller)(data,1);
+      case "verifyToken":
+        response = await controller. verifyToken.bind(controller)(data);
         break;
       default:
         response = "Request-key notfound";

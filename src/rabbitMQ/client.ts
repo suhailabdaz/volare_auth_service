@@ -32,7 +32,7 @@ class RabbitMQClient {
             this.consumerChannel = await this.connection.createChannel();
       
             const { queue: rpcQueue } = await this.consumerChannel.assertQueue(
-              rabbitmqConfig.rabbitMQ.queues.userQueue,
+              rabbitmqConfig.rabbitMQ.queues.authQueue,
               { exclusive: true }
             );
       
