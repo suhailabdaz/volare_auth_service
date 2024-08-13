@@ -8,28 +8,30 @@ export class Authcontroller {
       const token = data.token || '';
       const decoded: any = jwt.verify(token, process.env.ACCESS_TOKEN || "suhail" as Secret);
       if (!decoded) {
-        throw new Error('Invalid token');
+        return {success:false,userId:null,role:null}
       }
-      return { userId: decoded.id, role: decoded.role };
+      return {success:true, userId: decoded.id, role: decoded.role };
     } catch (e: any) {
       console.error(e);
-      throw new Error("Something went wrong in authentication");
+      return {success:false,userId:null,role:null}
     }
   }
 
   verifyToken = async (data: any) => {
     try {
+      console.log("Token refreshing...",data);
       const refreshtoken = data.token as string;
       const decoded: any = jwt.verify(refreshtoken, process.env.REFRESH_TOKEN || "suhail" as Secret);
       console.log("Token refreshed");
       if (!decoded) {
-        throw new Error("Invalid token");
+        console.error("error")
+        return {success:false}
       }
       const refreshToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.REFRESH_TOKEN || "suhail" as Secret, {
         expiresIn: "7d"
       });
       const accessToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.ACCESS_TOKEN || "suhail" as Secret, {
-        expiresIn: "15m"
+        expiresIn: "5m"
       });
       return { accessToken, refreshToken };
     } catch (e: any) {
