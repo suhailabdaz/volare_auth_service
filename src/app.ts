@@ -1,11 +1,20 @@
-// import { connectDB } from "./config/mongoDB.config";
 import RabbitMQClient from "./rabbitMQ/client"
+import express from "express";
+import { Application } from "express";
+import "dotenv/config";
+
 
 
 
 class App{
+  public app: Application;
+
   constructor(){
-      // connectDB()
+    this.app=express()
+    this.app.listen(process.env.AUTH_PORT,()=>{
+      console.log(`server  http://localhost:${process.env.AUTH_PORT}`);
+      
+    })
       RabbitMQClient.initialize()
   }
 }
