@@ -6,6 +6,7 @@ export default {
       queues: {
         authQueue: "auth_queue",
         
+        
       },
     },
   };
